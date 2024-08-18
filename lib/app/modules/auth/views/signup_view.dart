@@ -1,3 +1,4 @@
+import 'package:facebook_clone_app/app/data/services/auth_service.dart';
 import 'package:facebook_clone_app/app/modules/auth/controllers/singup_controller.dart';
 import 'package:facebook_clone_app/app/modules/auth/views/login_view.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,7 @@ class SignupView extends StatelessWidget {
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final controller = Get.put(SingupController());
+  final controller = Get.put(SingupController(authService: AuthService()));
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +134,13 @@ class SignupView extends StatelessWidget {
                                 WidgetStatePropertyAll(Colors.white),
                           ),
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {}
+                            if (_formKey.currentState!.validate()) {
+                              controller.register(
+                                nameController.text.trim(),
+                                emailController.text.trim(),
+                                passwordController.text.trim(),
+                              );
+                            }
                           },
                           child: const Text(
                             'Sign up',
