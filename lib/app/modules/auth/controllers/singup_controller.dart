@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:facebook_clone_app/app/data/services/auth_service.dart';
 import 'package:facebook_clone_app/app/modules/home/home_screen.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -36,7 +37,13 @@ class SingupController extends GetxController {
       );
 
       Get.to(() => const HomeScreen());
-      Get.snackbar('Success', 'User registered successfully');
+      Get.snackbar(
+        'Success',
+        'User registered successfully',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
     } catch (e) {
       errorMessage.value = e.toString();
       Get.snackbar('Error', errorMessage.value,
