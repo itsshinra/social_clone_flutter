@@ -1,55 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
       body: const Center(
-        child: Text('Home Screen'),
+        child: Text('HomeScreen'),
       ),
-      bottomNavigationBar: _bottomNavBar(),
-    );
-  }
-
-  BottomNavigationBar _bottomNavBar() {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      selectedItemColor: Colors.blue,
-      unselectedItemColor: Colors.black,
-      items: [
-        const BottomNavigationBarItem(
-            icon: Icon(Iconsax.home_25), label: "Home"),
-        const BottomNavigationBarItem(
-            icon: Icon(Iconsax.video_play), label: "Reels"),
-        const BottomNavigationBarItem(
-            icon: Icon(Iconsax.profile_2user), label: "Friends"),
-        const BottomNavigationBarItem(
-            icon: Icon(Iconsax.notification), label: "Notifications"),
-        BottomNavigationBarItem(
-            icon: Container(
-              height: 30,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black,
-                border: Border.all(color: Colors.black, width: 2),
-              ),
-              child: const CircleAvatar(
-                backgroundImage: NetworkImage(
-                    'https://www.greenscene.co.id/wp-content/uploads/2022/08/Luffy-4-1200x900.jpg'),
-              ),
-            ),
-            label: "Menu"),
-      ],
     );
   }
 
   AppBar _appBar() {
     return AppBar(
-      automaticallyImplyLeading: false,
+      // automaticallyImplyLeading: false,
       title: const Text('facebook'),
       titleTextStyle: const TextStyle(
         fontSize: 26,

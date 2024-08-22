@@ -1,13 +1,12 @@
-import 'package:facebook_clone_app/app/data/services/auth_service.dart';
 import 'package:facebook_clone_app/app/modules/auth/controllers/login_controller.dart';
 import 'package:facebook_clone_app/app/modules/auth/views/signup_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends GetView<LoginController> {
   LoginView({super.key});
 
-  final loginController = Get.put(LoginController(authService: AuthService()));
+  // final loginController = Get.put(LoginController());
 
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
@@ -18,7 +17,7 @@ class LoginView extends StatelessWidget {
     return Scaffold(
       body: SafeArea(
         child: Obx(() {
-          if (loginController.isLoading.value) {
+          if (controller.isLoading.value) {
             return const Center(
               child: CircularProgressIndicator(),
             );
@@ -103,7 +102,8 @@ class LoginView extends StatelessWidget {
                               if (_formKey.currentState!.validate()) {
                                 final email = emailController.text.trim();
                                 final password = passwordController.text.trim();
-                                loginController.login(email, password);
+                                controller.login(
+                                    email: email, password: password);
                               }
                             },
                             child: const Text(
