@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:facebook_clone_app/app/data/models/login_model.dart';
+import 'package:facebook_clone_app/app/data/models/post_model.dart';
 import 'package:facebook_clone_app/app/data/models/user_model.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -101,6 +102,33 @@ class AuthService {
         throw Exception("Unauthorized");
       }
       throw Exception("Failed to get user");
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // get post
+  Future<PostResModel> getPosts() async {
+    try {
+      final response = await dio.get(
+        "$baseUrl/posts",
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${box.read('token')}',
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return PostResModel.fromJson(response.data);
+      } else if (response.statusCode == 401) {
+        throw Exception("Unauthorized");
+      }
+      throw Exception("Failed to get post");
     } catch (e) {
       rethrow;
     }

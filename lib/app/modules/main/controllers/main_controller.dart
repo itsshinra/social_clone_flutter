@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import '../views/screens/home_screen.dart';
+import '../../posts/views/home_screen.dart';
 import '../views/screens/menu_screen.dart';
 
 class MainController extends GetxController {

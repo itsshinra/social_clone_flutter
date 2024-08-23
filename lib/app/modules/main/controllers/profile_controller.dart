@@ -5,13 +5,24 @@ import 'package:get/get.dart';
 class ProfileController extends GetxController {
   final apiService = AuthService();
   UserResModel user = UserResModel();
+  var isLoading = false;
+
+  void updateUI(bool state) {
+    isLoading = state;
+    update();
+  }
 
   void me() async {
-    final user = await apiService.getCurrentUser();
-
-    if (user.user != null) {
-      this.user = user;
-      update(); // refresh the UI
+    try {
+      final user = await apiService.getCurrentUser();
+      updateUI(true);
+      if (user.user != null) {
+        this.user = user;
+        updateUI(false); // refresh the UI
+      }
+    } catch (e) {
+      updateUI(false);
+      Get.snackbar("Error", e.toString());
     }
   }
 

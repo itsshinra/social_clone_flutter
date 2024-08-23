@@ -28,6 +28,7 @@ class MainView extends GetView<MainController> {
       id: 'bottom_navigation_bar',
       builder: (_) {
         return BottomNavigationBar(
+          backgroundColor: Colors.white,
           currentIndex: controller.selectedIndex,
           onTap: controller.onItemTapped,
           type: BottomNavigationBarType.fixed,
