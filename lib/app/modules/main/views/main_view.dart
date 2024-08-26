@@ -34,29 +34,18 @@ class MainView extends GetView<MainController> {
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Colors.blue,
           unselectedItemColor: Colors.black,
-          items: [
-            const BottomNavigationBarItem(
-                icon: Icon(Iconsax.home_2), label: "Home"),
-            const BottomNavigationBarItem(
+          selectedFontSize: 11,
+          unselectedFontSize: 11,
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Iconsax.home_2), label: "Home"),
+            BottomNavigationBarItem(
                 icon: Icon(Iconsax.video_play), label: "Reels"),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 icon: Icon(Iconsax.profile_2user), label: "Friends"),
-            const BottomNavigationBarItem(
+            BottomNavigationBarItem(
                 icon: Icon(Iconsax.notification), label: "Notifications"),
             BottomNavigationBarItem(
-                icon: Container(
-                  height: 30,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black,
-                    border: Border.all(color: Colors.black, width: 2),
-                  ),
-                  child: const CircleAvatar(
-                    backgroundImage: NetworkImage(
-                        'https://www.greenscene.co.id/wp-content/uploads/2022/08/Luffy-4-1200x900.jpg'),
-                  ),
-                ),
-                label: "Menu"),
+                icon: Icon(Iconsax.profile_circle), label: "Menu"),
           ],
         );
       },

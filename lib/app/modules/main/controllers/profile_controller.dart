@@ -14,8 +14,8 @@ class ProfileController extends GetxController {
 
   void me() async {
     try {
-      final user = await apiService.getCurrentUser();
       updateUI(true);
+      final user = await apiService.getCurrentUser();
       if (user.user != null) {
         this.user = user;
         updateUI(false); // refresh the UI

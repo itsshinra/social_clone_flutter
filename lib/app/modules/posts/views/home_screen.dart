@@ -1,7 +1,8 @@
 import 'package:facebook_clone_app/app/data/models/post_model.dart';
+import 'package:facebook_clone_app/app/modules/main/controllers/profile_controller.dart';
 import 'package:facebook_clone_app/app/modules/posts/controllers/post_controller.dart';
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:get/state_manager.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -31,25 +32,10 @@ class _HomeScreenState extends State<HomeScreen> {
             child: ListView(
               physics: const BouncingScrollPhysics(),
               children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(
-                            "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg"),
-                      ),
-                      SizedBox(width: 10),
-                      Text(
-                        "What's on your mind?",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      Spacer(),
-                      Icon(Iconsax.gallery5, color: Colors.green),
-                    ],
-                  ),
-                ),
-                const Divider(thickness: 3),
+                _whatOnYourMind(),
+                const Divider(thickness: 4),
+                _storyRow(),
+                const Divider(thickness: 4),
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const BouncingScrollPhysics(),
@@ -61,6 +47,180 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _storyRow() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 16),
+      child: SizedBox(
+        height: 200,
+        child: GetBuilder<ProfileController>(
+          init: ProfileController(),
+          builder: (userController) {
+            if (userController.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return ListView(
+              physics: const BouncingScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              children: [
+                Stack(
+                  children: [
+                    Container(
+                      height: 200,
+                      width: 115,
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            height: 130,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(15),
+                                topRight: Radius.circular(15),
+                              ),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                    'http://10.0.2.2:8000/images/${userController.user.user!.profileImage!}'),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          const Text(
+                            'Create\nstory',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+                    ),
+                    Positioned(
+                      left: 30,
+                      bottom: 50,
+                      child: Container(
+                        height: 45,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey.shade100,
+                            width: 3,
+                          ),
+                          shape: BoxShape.circle,
+                          color: Colors.blue,
+                        ),
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(
+                            Iconsax.add,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(width: 3),
+                SizedBox(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 15,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 3, left: 3),
+                        child: Stack(
+                          children: [
+                            Container(
+                              height: 200,
+                              width: 115,
+                              decoration: BoxDecoration(
+                                color: Colors.black,
+                                borderRadius: BorderRadius.circular(15),
+                                image: const DecorationImage(
+                                  image: NetworkImage(
+                                      'https://w0.peakpx.com/wallpaper/29/935/HD-wallpaper-nissan-gtr-r34-black-car-gtr-r34-thumbnail.jpg'),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            const Positioned(
+                              bottom: 5,
+                              left: 8,
+                              child: Text(
+                                'shin ra',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 15,
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              left: 2,
+                              top: 5,
+                              child: Container(
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.blue,
+                                    width: 2,
+                                  ),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg"),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Padding _whatOnYourMind() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: GetBuilder<ProfileController>(
+        init: ProfileController(),
+        builder: (userController) {
+          if (userController.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          return Row(
+            children: [
+              CircleAvatar(
+                backgroundImage: NetworkImage(
+                    "http://10.0.2.2:8000/images/${userController.user.user!.profileImage!}"),
+              ),
+              const SizedBox(width: 10),
+              const Text(
+                "What's on your mind?",
+                style: TextStyle(fontSize: 16),
+              ),
+              const Spacer(),
+              const Icon(Iconsax.gallery5, color: Colors.green),
+            ],
           );
         },
       ),
@@ -124,37 +284,41 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Text("${post.caption}"),
         ),
-        // caption
-        Image.network('http://10.0.2.2:8000/posts/${post.image}'),
+        // image
+        Image.network(
+          'http://10.0.2.2:8000/posts/${post.image}',
+        ),
         const SizedBox(height: 10),
         // Like, Comment, Share Count
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // like
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Row(
-                children: [
-                  if (post.likes!.isNotEmpty)
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8.0),
-                      child: Icon(
-                        Iconsax.heart_circle5,
-                        color: Colors.pink,
-                      ),
+              child: post.likes!.isNotEmpty
+                  ? Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Icon(
+                            Iconsax.heart_circle5,
+                            color: Colors.pink,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Text('${post.likesCount}'),
+                      ],
                     )
-                  else
-                    const Icon(Iconsax.heart_circle),
-                  const SizedBox(width: 5),
-                  Text('${post.likesCount}'),
-                ],
-              ),
+                  : null,
             ),
+            // comment
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 children: [
-                  Text('${post.commentsCount} comments'),
+                  if (post.comments!.isNotEmpty)
+                    Text('${post.commentsCount} comments'),
                 ],
               ),
             ),
@@ -250,7 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        const Divider(thickness: 3),
+        const Divider(thickness: 4),
       ],
     );
   }

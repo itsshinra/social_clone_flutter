@@ -1,4 +1,5 @@
 import 'package:facebook_clone_app/app/modules/main/controllers/main_controller.dart';
+import 'package:facebook_clone_app/app/modules/main/controllers/profile_controller.dart';
 import 'package:facebook_clone_app/app/modules/main/views/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -55,6 +56,7 @@ class MenuScreen extends GetView<MainController> {
       ),
     );
   }
+  //s://www.greenscene.co.id/wp-content/uploads/2022/08/Luffy-4-1200x900.jpg
 
   AppBar _appBar() {
     return AppBar(
@@ -156,37 +158,45 @@ class MenuScreen extends GetView<MainController> {
     );
   }
 
-  Row _profile() {
-    return Row(
-      children: [
-        const CircleAvatar(
-          radius: 25,
-          backgroundImage: NetworkImage(
-              'https://www.greenscene.co.id/wp-content/uploads/2022/08/Luffy-4-1200x900.jpg'),
-        ),
-        const SizedBox(width: 15),
-        const Text(
-          'Shinra',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        const Spacer(),
-        Container(
-          // height: 20,
-          padding: const EdgeInsets.all(3),
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.grey.shade300,
-          ),
-          child: const Icon(
-            Iconsax.arrow_down_1,
-            size: 24,
-            color: Colors.black,
-          ),
-        ),
-      ],
+  Widget _profile() {
+    return GetBuilder<ProfileController>(
+      init: ProfileController(),
+      builder: (userController) {
+        if (userController.isLoading) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        return Row(
+          children: [
+            CircleAvatar(
+              radius: 25,
+              backgroundImage: NetworkImage(
+                  'http://10.0.2.2:8000/images/${userController.user.user!.profileImage!}'),
+            ),
+            const SizedBox(width: 15),
+            Text(
+              '${userController.user.user!.name}',
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const Spacer(),
+            Container(
+              // height: 20,
+              padding: const EdgeInsets.all(3),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.grey.shade300,
+              ),
+              child: const Icon(
+                Iconsax.arrow_down_1,
+                size: 24,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

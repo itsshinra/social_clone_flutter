@@ -24,68 +24,66 @@ class _ProfileScreenState extends State<ProfileScreen> {
               return const Center(child: CircularProgressIndicator());
             }
             final user = controller.user.user;
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 55),
-                  Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 84,
-                        backgroundColor: Colors.black,
-                        child: controller.user.user == null &&
-                                controller.user.user?.profileImage == null
-                            ? const CircleAvatar(
-                                radius: 80,
-                                backgroundImage: NetworkImage(
-                                    'https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg'),
-                              )
-                            : CircleAvatar(
-                                radius: 80,
-                                backgroundImage: NetworkImage(
-                                  "http://10.0.2.2:8000/images/${controller.user.user!.profileImage!}",
-                                ),
+            return ListView(
+              physics: const BouncingScrollPhysics(),
+              children: [
+                const SizedBox(height: 55),
+                Stack(
+                  children: [
+                    CircleAvatar(
+                      radius: 84,
+                      backgroundColor: Colors.black,
+                      child: controller.user.user == null &&
+                              controller.user.user?.profileImage == null
+                          ? const CircleAvatar(
+                              radius: 80,
+                              backgroundImage: NetworkImage(
+                                  'https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg'),
+                            )
+                          : CircleAvatar(
+                              radius: 80,
+                              backgroundImage: NetworkImage(
+                                "http://10.0.2.2:8000/images/${controller.user.user!.profileImage!}",
                               ),
-                      ),
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
-                            shape: BoxShape.circle,
-                          ),
-                          child: IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons.camera_alt_rounded),
-                          ),
+                            ),
+                    ),
+                    Positioned(
+                      left: 110,
+                      bottom: 0,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          onPressed: () {},
+                          icon: const Icon(Icons.camera_alt_rounded),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    '${user!.name}',
-                    style: const TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
                     ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  '${user!.name}',
+                  style: const TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
                   ),
-                  Text('${user.email}'),
-                  const SizedBox(height: 8),
-                  _buttonAddtoStory(),
-                  const SizedBox(height: 16),
-                  _postRow(),
-                  const SizedBox(height: 16),
-                  _detailColumn(),
-                  const SizedBox(height: 16),
-                  _storyRow(),
-                  const SizedBox(height: 10),
-                  _editPublicDetailButton(),
-                  const SizedBox(height: 16),
-                ],
-              ),
+                ),
+                Text('${user.email}'),
+                const SizedBox(height: 8),
+                _buttonAddtoStory(),
+                const SizedBox(height: 16),
+                _postRow(),
+                const SizedBox(height: 16),
+                _detailColumn(),
+                const SizedBox(height: 16),
+                _storyRow(),
+                const SizedBox(height: 10),
+                _editPublicDetailButton(),
+                const SizedBox(height: 16),
+              ],
             );
           },
         ),
@@ -368,10 +366,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
         icon: const Icon(Icons.arrow_back_ios_new_rounded),
       ),
-      title: const Text(
-        'Shin ra',
-        style: TextStyle(fontWeight: FontWeight.w500),
-      ),
+      title: GetBuilder<ProfileController>(builder: (controller) {
+        return Text(
+          controller.user.user!.name!,
+          style: const TextStyle(fontWeight: FontWeight.w500),
+        );
+      }),
       centerTitle: true,
       actions: [
         IconButton(

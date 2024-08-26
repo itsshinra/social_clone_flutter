@@ -14,12 +14,12 @@ class AuthService {
   Future<LoginResModel> login(
       {required String email, required String password}) async {
     try {
-      var _formData = FormData.fromMap({
+      var formData = FormData.fromMap({
         'email': email,
         'password': password,
       });
       final response = await dio.post("$baseUrl/login",
-          data: _formData,
+          data: formData,
           options: Options(
             headers: {
               'Accept': 'application/json',
@@ -48,7 +48,7 @@ class AuthService {
     File? image,
   }) async {
     try {
-      var _formData = FormData.fromMap({
+      var formData = FormData.fromMap({
         'email': email,
         'name': name,
         'password': password,
@@ -57,7 +57,7 @@ class AuthService {
       });
       final response = await dio.post(
         "$baseUrl/register",
-        data: _formData,
+        data: formData,
         options: Options(
           headers: {
             'Accept': 'application/json',
