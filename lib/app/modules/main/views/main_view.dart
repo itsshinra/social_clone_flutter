@@ -11,6 +11,7 @@ class MainView extends GetView<MainController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GetBuilder<MainController>(
+        init: MainController(),
         id: 'index_sctack',
         builder: (_) {
           return IndexedStack(
@@ -25,6 +26,7 @@ class MainView extends GetView<MainController> {
 
   Widget _bottomNavBar() {
     return GetBuilder<MainController>(
+      init: MainController(),
       id: 'bottom_navigation_bar',
       builder: (_) {
         return BottomNavigationBar(

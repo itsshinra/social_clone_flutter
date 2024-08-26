@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               image: DecorationImage(
                                 image: NetworkImage(
-                                    'http://10.0.2.2:8000/images/${userController.user.user!.profileImage!}'),
+                                    'http://10.0.2.2:8000/images/${userController.user.user!.profileImage}'),
                                 fit: BoxFit.cover,
                               ),
                             ),
