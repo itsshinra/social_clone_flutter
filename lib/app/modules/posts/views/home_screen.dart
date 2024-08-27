@@ -453,7 +453,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: IconButton(
             onPressed: () {},
             icon: const Icon(
-              Iconsax.search_normal,
+              Iconsax.search_normal_1,
             ),
           ),
         ),
@@ -471,7 +471,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: IconButton(
               onPressed: () {},
               icon: const Icon(
-                Iconsax.message,
+                Iconsax.message5,
               ),
             ),
           ),

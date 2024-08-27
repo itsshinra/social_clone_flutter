@@ -16,7 +16,7 @@ class MainController extends GetxController {
     Container(child: const Center(child: Text('Reels Screen'))),
     Container(child: const Center(child: Text('Friends Screen'))),
     Container(child: const Center(child: Text('Notifications Screen'))),
-    const MenuScreen(),
+    MenuScreen(),
   ];
   void onItemTapped(int index) {
     selectedIndex = index;

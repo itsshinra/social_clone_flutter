@@ -5,58 +5,183 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
 
+// ignore: must_be_immutable
 class MenuScreen extends GetView<MainController> {
-  const MenuScreen({super.key});
+  MenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Get.to(() => const ProfileScreen());
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  height: 65,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.grey,
-                        blurRadius: 6,
-                      )
-                    ],
-                  ),
-                  child: _profile(),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Your shortcuts',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              const SizedBox(height: 10),
-              _forYouShortcut(),
-              const Spacer(),
-              _logoutButton(context),
-            ],
+      body: ListView(
+        padding: const EdgeInsets.all(8),
+        physics: const BouncingScrollPhysics(),
+        children: [
+          _profile(),
+          const SizedBox(height: 10),
+          const Text(
+            'Your shortcuts',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
+          const SizedBox(height: 10),
+          _forYouShortcut(),
+          const SizedBox(height: 16),
+          _memoriesGrid(),
+          const SizedBox(height: 10),
+          _darkMode(),
+          _helpSupport(),
+          _helpSupport(),
+          _helpSupport(),
+          const Spacer(),
+          _logoutButton(context),
+        ],
+      ),
+    );
+  }
+
+  Card _darkMode() {
+    return Card(
+      color: Colors.white,
+      child: ListTile(
+        leading: const Icon(Iconsax.moon5),
+        title: const Text(
+          'Dark Mode',
+          style: TextStyle(fontSize: 16),
+        ),
+        trailing: Switch(
+          value: false,
+          onChanged: (value) {},
         ),
       ),
     );
   }
-  //s://www.greenscene.co.id/wp-content/uploads/2022/08/Luffy-4-1200x900.jpg
+
+  Column _helpSupport() {
+    return const Column(
+      children: [
+        Divider(),
+        ListTile(
+          style: ListTileStyle.drawer,
+          dense: true,
+          leading: Icon(
+            Iconsax.info_circle5,
+            size: 32,
+          ),
+          title: Text(
+            'Help & support',
+            style: TextStyle(fontSize: 16),
+          ),
+          trailing: Icon(Icons.keyboard_arrow_down_rounded),
+        ),
+      ],
+    );
+  }
+
+  GestureDetector _profile() {
+    return GestureDetector(
+      onTap: () {
+        Get.to(() => const ProfileScreen());
+      },
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        height: 65,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: const [
+            BoxShadow(
+              color: Colors.grey,
+              blurRadius: 6,
+            )
+          ],
+        ),
+        child: GetBuilder<ProfileController>(
+          init: ProfileController(),
+          builder: (userController) {
+            if (userController.isLoading) {
+              return const Center(child: CircularProgressIndicator());
+            }
+            return Row(
+              children: [
+                CircleAvatar(
+                  radius: 25,
+                  backgroundImage: NetworkImage(
+                      'http://10.0.2.2:8000/images/${userController.user.user!.profileImage!}'),
+                ),
+                const SizedBox(width: 15),
+                Text(
+                  '${userController.user.user!.name}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const Spacer(),
+                Container(
+                  // height: 20,
+                  padding: const EdgeInsets.all(3),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.grey.shade300,
+                  ),
+                  child: const Icon(
+                    Icons.keyboard_arrow_down_rounded,
+                    size: 24,
+                    color: Colors.black,
+                  ),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  SizedBox _memoriesGrid() {
+    return SizedBox(
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 2.2,
+        ),
+        scrollDirection: Axis.vertical,
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: item.length,
+        itemBuilder: (context, index) {
+          final items = item[index];
+          return Container(
+            height: 80,
+            width: MediaQuery.sizeOf(context).width * 0.5,
+            padding: const EdgeInsets.all(10),
+            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Image.asset('${items.image}', width: 30),
+                Text(
+                  '${items.name}',
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   AppBar _appBar() {
     return AppBar(
@@ -90,7 +215,7 @@ class MenuScreen extends GetView<MainController> {
           child: IconButton(
             onPressed: () {},
             icon: const Icon(
-              Iconsax.search_normal,
+              Iconsax.search_normal_1,
             ),
           ),
         ),
@@ -158,48 +283,6 @@ class MenuScreen extends GetView<MainController> {
     );
   }
 
-  Widget _profile() {
-    return GetBuilder<ProfileController>(
-      init: ProfileController(),
-      builder: (userController) {
-        if (userController.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        return Row(
-          children: [
-            CircleAvatar(
-              radius: 25,
-              backgroundImage: NetworkImage(
-                  'http://10.0.2.2:8000/images/${userController.user.user!.profileImage!}'),
-            ),
-            const SizedBox(width: 15),
-            Text(
-              '${userController.user.user!.name}',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Spacer(),
-            Container(
-              // height: 20,
-              padding: const EdgeInsets.all(3),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.grey.shade300,
-              ),
-              child: const Icon(
-                Iconsax.arrow_down_1,
-                size: 24,
-                color: Colors.black,
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -232,4 +315,21 @@ class MenuScreen extends GetView<MainController> {
       },
     );
   }
+
+  var item = [
+    ItemGrid(name: 'Memories', image: 'assets/memories.png'),
+    ItemGrid(name: 'Video', image: 'assets/video.png'),
+    ItemGrid(name: 'Saved', image: 'assets/saved.png'),
+    ItemGrid(name: 'Groups', image: 'assets/groups.png'),
+    ItemGrid(name: 'Friends', image: 'assets/friend.png'),
+    ItemGrid(name: 'Feeds', image: 'assets/feed.png'),
+    ItemGrid(name: 'Reels', image: 'assets/reel.png'),
+    ItemGrid(name: 'Pages', image: 'assets/page.png'),
+  ];
+}
+
+class ItemGrid {
+  String? name;
+  String? image;
+  ItemGrid({required this.name, required this.image});
 }

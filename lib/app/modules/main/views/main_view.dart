@@ -35,7 +35,7 @@ class MainView extends GetView<MainController> {
           onTap: controller.onItemTapped,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.black,
+          unselectedItemColor: Colors.grey.shade800,
           selectedFontSize: 11,
           unselectedFontSize: 11,
           items: const [
