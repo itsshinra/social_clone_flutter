@@ -27,7 +27,7 @@ class MenuScreen extends GetView<MainController> {
             ),
           ),
           const SizedBox(height: 10),
-          _forYouShortcut(),
+          _yourShortcut(),
           const SizedBox(height: 16),
           _memoriesGrid(),
           const SizedBox(height: 10),
@@ -35,7 +35,6 @@ class MenuScreen extends GetView<MainController> {
           _helpSupport(),
           _helpSupport(),
           _helpSupport(),
-          const Spacer(),
           _logoutButton(context),
         ],
       ),
@@ -59,24 +58,17 @@ class MenuScreen extends GetView<MainController> {
     );
   }
 
-  Column _helpSupport() {
-    return const Column(
-      children: [
-        Divider(),
-        ListTile(
-          style: ListTileStyle.drawer,
-          dense: true,
-          leading: Icon(
-            Iconsax.info_circle5,
-            size: 32,
-          ),
-          title: Text(
-            'Help & support',
-            style: TextStyle(fontSize: 16),
-          ),
-          trailing: Icon(Icons.keyboard_arrow_down_rounded),
+  Card _helpSupport() {
+    return const Card(
+      color: Colors.white,
+      child: ListTile(
+        leading: Icon(Iconsax.info_circle),
+        title: Text(
+          'Help & support',
+          style: TextStyle(fontSize: 16),
         ),
-      ],
+        trailing: Icon(Icons.keyboard_arrow_down_rounded),
+      ),
     );
   }
 
@@ -141,45 +133,42 @@ class MenuScreen extends GetView<MainController> {
     );
   }
 
-  SizedBox _memoriesGrid() {
-    return SizedBox(
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 2.2,
-        ),
-        scrollDirection: Axis.vertical,
-        physics: const NeverScrollableScrollPhysics(),
-        shrinkWrap: true,
-        itemCount: item.length,
-        itemBuilder: (context, index) {
-          final items = item[index];
-          return Container(
-            height: 80,
-            width: MediaQuery.sizeOf(context).width * 0.5,
-            padding: const EdgeInsets.all(10),
-            margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Image.asset('${items.image}', width: 30),
-                Text(
-                  '${items.name}',
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
+  Widget _memoriesGrid() {
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        childAspectRatio: 2.2,
       ),
+      physics: const NeverScrollableScrollPhysics(), // Disable scrolling
+      shrinkWrap: true, // Adjusts GridView's height to fit its children
+      itemCount: item.length,
+      itemBuilder: (context, index) {
+        final items = item[index];
+        return Container(
+          height: 80,
+          width: MediaQuery.of(context).size.width * 0.5,
+          padding: const EdgeInsets.all(10),
+          margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image.asset('${items.image}', width: 30),
+              Text(
+                '${items.name}',
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -224,7 +213,7 @@ class MenuScreen extends GetView<MainController> {
     );
   }
 
-  SizedBox _forYouShortcut() {
+  Widget _yourShortcut() {
     return SizedBox(
       height: 90,
       child: ListView.builder(
@@ -238,8 +227,7 @@ class MenuScreen extends GetView<MainController> {
               children: [
                 CircleAvatar(
                   radius: 33,
-                  backgroundImage: NetworkImage(
-                      'https://scontent.fpnh8-2.fna.fbcdn.net/v/t1.30497-1/453178253_471506465671661_2781666950760530985_n.png?stp=dst-png_s200x200&_nc_cat=1&ccb=1-7&_nc_sid=136b72&_nc_eui2=AeHyAf08MNaftrEHmI-gXJ_fWt9TLzuBU1Ba31MvO4FTUBjoLHCqTpEFM9v_g4aQsknGwv-t_CZW7_QqeLQMcG3i&_nc_ohc=qpkbNpQcWu8Q7kNvgFAg42i&_nc_ht=scontent.fpnh8-2.fna&oh=00_AYA4Pxlanb_J3wAepDigVgJ4-VFnMAqKwo_DmPvFkfl17w&oe=66EE517A'),
+                  backgroundImage: AssetImage('assets/placeholder.jpg'),
                 ),
                 Text(
                   'Noch Noch',
@@ -258,12 +246,12 @@ class MenuScreen extends GetView<MainController> {
       children: [
         Expanded(
           child: ElevatedButton(
-            style: const ButtonStyle(
-              elevation: WidgetStatePropertyAll(0),
-              backgroundColor: WidgetStatePropertyAll(Colors.black),
-              foregroundColor: WidgetStatePropertyAll(Colors.white),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
+            style: ButtonStyle(
+              elevation: WidgetStateProperty.all(0),
+              backgroundColor: WidgetStateProperty.all(Colors.black),
+              foregroundColor: WidgetStateProperty.all(Colors.white),
+              shape: WidgetStateProperty.all(
+                const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(
                     Radius.circular(8),
                   ),

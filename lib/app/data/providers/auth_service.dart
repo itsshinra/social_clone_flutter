@@ -133,4 +133,35 @@ class AuthService {
       rethrow;
     }
   }
+
+  // create post
+  Future<bool> createPost(
+      {required String caption, required File photo}) async {
+    try {
+      var formData = FormData.fromMap({
+        'caption': caption,
+        'image': await MultipartFile.fromFile(photo.path)
+      });
+      final response = await dio.post(
+        data: formData,
+        "$baseUrl/posts",
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${box.read('token')}',
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return true;
+      }
+      throw Exception("Failed to create a post");
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

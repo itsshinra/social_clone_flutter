@@ -163,8 +163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: Colors.black,
                           borderRadius: BorderRadius.circular(8),
                           image: const DecorationImage(
-                            image: NetworkImage(
-                                'https://w0.peakpx.com/wallpaper/29/935/HD-wallpaper-nissan-gtr-r34-black-car-gtr-r34-thumbnail.jpg'),
+                            image: AssetImage('assets/gtr.jpg'),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -362,7 +361,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       surfaceTintColor: Colors.white,
       leading: IconButton(
         onPressed: () {
-          Navigator.pop(context);
+          Get.back();
         },
         icon: const Icon(Icons.arrow_back_ios_new_rounded),
       ),

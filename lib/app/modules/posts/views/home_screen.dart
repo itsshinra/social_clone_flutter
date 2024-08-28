@@ -1,5 +1,6 @@
 import 'package:facebook_clone_app/app/data/models/post_model.dart';
 import 'package:facebook_clone_app/app/modules/main/controllers/profile_controller.dart';
+import 'package:facebook_clone_app/app/modules/main/views/screens/search_screen.dart';
 import 'package:facebook_clone_app/app/modules/posts/controllers/post_controller.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -148,8 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Colors.black,
                                 borderRadius: BorderRadius.circular(15),
                                 image: const DecorationImage(
-                                  image: NetworkImage(
-                                      'https://w0.peakpx.com/wallpaper/29/935/HD-wallpaper-nissan-gtr-r34-black-car-gtr-r34-thumbnail.jpg'),
+                                  image: AssetImage('assets/gtr.jpg'),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -179,8 +179,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   shape: BoxShape.circle,
                                 ),
                                 child: const CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg"),
+                                  backgroundImage:
+                                      AssetImage("assets/placeholder.jpg"),
                                 ),
                               ),
                             )
@@ -219,7 +219,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: TextStyle(fontSize: 16),
               ),
               const Spacer(),
-              const Icon(Iconsax.gallery5, color: Colors.green),
+              GetBuilder<PostController>(
+                  init: PostController(),
+                  builder: (controller) {
+                    return InkWell(
+                      onTap: controller.pickImage,
+                      child: const Icon(Iconsax.gallery5, color: Colors.green),
+                    );
+                  }),
             ],
           );
         },
@@ -243,8 +250,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           "http://10.0.2.2:8000/images/${post.user!.profileImage!}"),
                     )
                   : const CircleAvatar(
-                      backgroundImage: NetworkImage(
-                          "https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg"),
+                      backgroundImage: AssetImage("assets/placeholder.jpg"),
                     ),
               Padding(
                 padding: const EdgeInsets.only(left: 10.0),
@@ -451,7 +457,9 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.grey.shade300,
           ),
           child: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Get.to(() => const SearchScreen());
+            },
             icon: const Icon(
               Iconsax.search_normal_1,
             ),
