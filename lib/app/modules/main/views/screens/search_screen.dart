@@ -8,6 +8,7 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: _appBar(),
     );
   }
@@ -31,7 +32,7 @@ class SearchScreen extends StatelessWidget {
             isDense: true,
             hintText: 'Search Facebook',
             hintStyle: const TextStyle(
-              fontSize: 16,
+              fontSize: 15,
               fontWeight: FontWeight.w300,
             ),
             border: OutlineInputBorder(

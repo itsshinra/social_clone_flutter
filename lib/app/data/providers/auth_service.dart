@@ -164,4 +164,56 @@ class AuthService {
       rethrow;
     }
   }
+
+  // Delete post
+  Future<bool> deletePost({required String postId}) async {
+    try {
+      final response = await dio.delete(
+        "$baseUrl/posts/$postId",
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${box.read('token')}',
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+      throw Exception("You cannot delete this post");
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // Like post
+  Future<bool> likeDislike({required String postId}) async {
+    try {
+      final response = await dio.post(
+        "$baseUrl/like-dislike/$postId",
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${box.read('token')}',
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      print("statuscode: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        return true;
+      }
+      throw Exception("Failed to Like/Dislike post");
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_unnecessary_containers
 
+import 'package:facebook_clone_app/app/modules/main/views/screens/reel_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
@@ -13,7 +14,7 @@ class MainController extends GetxController {
 
   final screens = [
     const HomeScreen(),
-    Container(child: const Center(child: Text('Reels Screen'))),
+    const ReelScreen(),
     Container(child: const Center(child: Text('Friends Screen'))),
     Container(child: const Center(child: Text('Notifications Screen'))),
     MenuScreen(),

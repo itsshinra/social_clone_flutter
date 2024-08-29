@@ -35,6 +35,36 @@ class PostController extends GetxController {
     }
   }
 
+  void deletePost(String id) async {
+    try {
+      final status = await apiService.deletePost(postId: id);
+      if (status) {
+        Get.snackbar("Success", "Post deleted successfully");
+        getPosts();
+      }
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    }
+  }
+
+  void likeDislike(String postId, int postIndex) async {
+    try {
+      final status = await apiService.likeDislike(postId: postId);
+      if (posts.posts!.data![postIndex].isLiked!) {
+        posts.posts!.data![postIndex].isLiked = false;
+        posts.posts!.data![postIndex].likesCount =
+            posts.posts!.data![postIndex].likesCount! - 1;
+      } else {
+        posts.posts!.data![postIndex].isLiked = true;
+        posts.posts!.data![postIndex].likesCount =
+            posts.posts!.data![postIndex].likesCount! + 1;
+      }
+      update();
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    }
+  }
+
   void pickImage() async {
     try {
       final xFile = await _imagePicker.pickImage(source: ImageSource.gallery);
