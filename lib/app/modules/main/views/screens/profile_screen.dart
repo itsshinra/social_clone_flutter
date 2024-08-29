@@ -14,6 +14,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: _appBar(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -359,6 +360,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   AppBar _appBar() {
     return AppBar(
       surfaceTintColor: Colors.white,
+      backgroundColor: Colors.white,
       leading: IconButton(
         onPressed: () {
           Get.back();

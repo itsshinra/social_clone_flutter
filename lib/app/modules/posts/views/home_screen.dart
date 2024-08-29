@@ -1,6 +1,7 @@
 import 'package:facebook_clone_app/app/modules/main/controllers/profile_controller.dart';
 import 'package:facebook_clone_app/app/modules/main/views/screens/search_screen.dart';
 import 'package:facebook_clone_app/app/modules/posts/controllers/post_controller.dart';
+import 'package:facebook_clone_app/app/modules/posts/views/sub_screens/create_comment_view.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -26,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return const Center(child: CircularProgressIndicator());
           }
           return RefreshIndicator(
+            color: Colors.blue,
             onRefresh: () {
               return controller.getPosts();
             },
@@ -184,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   const EdgeInsets.symmetric(horizontal: 8),
                               child: Row(
                                 children: [
-                                  if (post.comments!.isNotEmpty)
+                                  if (post.commentsCount! > 0)
                                     Text('${post.commentsCount} comments'),
                                 ],
                               ),
@@ -256,7 +258,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                               ),
-                              onPressed: () {},
+                              onPressed: () {
+                                Get.to(() => CreateCommentView());
+                              },
                               child: const Row(
                                 children: [
                                   Icon(Iconsax.message),
