@@ -42,6 +42,8 @@ dependencies:
   http: ^1.2.2
   iconsax: ^0.0.8
   timeago: ^3.7.0
+  internet_connection_checker: ^2.0.0
+  page_transition: ^2.1.0
 
 dev_dependencies:
   flutter_test:

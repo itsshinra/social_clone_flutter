@@ -23,6 +23,9 @@ class _HomeScreenState extends State<HomeScreen> {
       body: GetBuilder<PostController>(
         init: PostController(),
         builder: (controller) {
+          if (controller.isConnected) {
+            return const Center(child: Text('Check your internet connection'));
+          }
           if (controller.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }

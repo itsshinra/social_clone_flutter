@@ -2,10 +2,12 @@ import 'dart:io';
 import 'package:facebook_clone_app/app/data/models/post_model.dart';
 import 'package:facebook_clone_app/app/data/providers/auth_service.dart';
 import 'package:facebook_clone_app/app/modules/posts/views/sub_screens/create_post_view.dart';
+import 'package:facebook_clone_app/app/services/internet_checker_controller.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PostController extends GetxController {
+  var isConnected = false;
   var isLoading = false;
   final apiService = AuthService();
   PostResModel posts = PostResModel();
@@ -14,6 +16,7 @@ class PostController extends GetxController {
 
   @override
   void onInit() {
+    checkInternet();
     getPosts();
     super.onInit();
   }
@@ -49,6 +52,7 @@ class PostController extends GetxController {
 
   void likeDislike(String postId, int postIndex) async {
     try {
+      // ignore: unused_local_variable
       final status = await apiService.likeDislike(postId: postId);
       if (posts.posts!.data![postIndex].isLiked!) {
         posts.posts!.data![postIndex].isLiked = false;
@@ -78,5 +82,11 @@ class PostController extends GetxController {
     } catch (e) {
       Get.snackbar("Error", e.toString());
     }
+  }
+
+  void checkInternet() async {
+    final connected = Get.find<InternetCheckerController>().isConnected;
+    isConnected = connected;
+    update();
   }
 }

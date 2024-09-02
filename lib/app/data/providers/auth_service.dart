@@ -1,5 +1,8 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:facebook_clone_app/app/data/models/comment_model.dart';
 import 'package:facebook_clone_app/app/data/models/login_model.dart';
 import 'package:facebook_clone_app/app/data/models/post_model.dart';
 import 'package:facebook_clone_app/app/data/models/user_model.dart';
@@ -10,6 +13,7 @@ class AuthService {
   final box = GetStorage(); // use to store data locally
   final String baseUrl = 'http://10.0.2.2:8000/api';
 
+  //////////////////////  Auth  //////////////////////
   // Login Service
   Future<LoginResModel> login(
       {required String email, required String password}) async {
@@ -80,7 +84,33 @@ class AuthService {
     }
   }
 
-  // current user
+  //logout user
+  Future<bool> logout() async {
+    try {
+      final response = await dio.post(
+        "$baseUrl/logout",
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${box.read('token')}',
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      print("statuscode: ${response.statusCode}");
+      if (response.statusCode == 200) {
+        return true;
+      }
+      throw Exception("Failed to logout");
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+// current user
   Future<UserResModel> getCurrentUser() async {
     try {
       final response = await dio.post(
@@ -106,7 +136,9 @@ class AuthService {
       rethrow;
     }
   }
+  /////////////////////// End Auth ///////////////////////
 
+  //////////////////////  Post  //////////////////////
   // get post
   Future<PostResModel> getPosts() async {
     try {
@@ -212,6 +244,35 @@ class AuthService {
         return true;
       }
       throw Exception("Failed to Like/Dislike post");
+    } catch (e) {
+      rethrow;
+    }
+  }
+  /////////////////////// End Post ///////////////////////
+
+  //////////////////////  Comment  //////////////////////
+  // get comments
+  Future<CommentResModel> getComments({required String postId}) async {
+    try {
+      final response = await dio.get(
+        "$baseUrl/comments/$postId",
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${box.read('token')}',
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return CommentResModel.fromJson(response.data);
+      } else if (response.statusCode == 401) {
+        throw Exception("Unauthorized");
+      }
+      throw Exception("Failed to get comments");
     } catch (e) {
       rethrow;
     }
