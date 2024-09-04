@@ -110,7 +110,7 @@ class AuthService {
     }
   }
 
-// current user
+  // current user
   Future<UserResModel> getCurrentUser() async {
     try {
       final response = await dio.post(

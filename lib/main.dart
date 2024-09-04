@@ -5,7 +5,6 @@ import 'package:facebook_clone_app/app/modules/auth/views/signup_view.dart';
 import 'package:facebook_clone_app/app/modules/main/binding/main_binding.dart';
 import 'package:facebook_clone_app/app/modules/main/middleware/main_middleware.dart';
 import 'package:facebook_clone_app/app/modules/main/views/main_view.dart';
-import 'package:facebook_clone_app/app/services/internet_checker_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
