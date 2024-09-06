@@ -304,4 +304,35 @@ class AuthService {
       rethrow;
     }
   }
+
+  // create comments
+  Future<bool> createComment(
+      {required String text, required String postId}) async {
+    try {
+      var formData = FormData.fromMap({
+        'text': text,
+        'post_id': postId,
+      });
+      final response = await dio.post(
+        data: formData,
+        "$baseUrl/comments",
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${box.read('token')}',
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return true;
+      }
+      throw Exception("Failed to create a comment");
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

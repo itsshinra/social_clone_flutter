@@ -12,6 +12,7 @@ class CreateCommentView extends StatelessWidget {
   final String? postId;
   final Data? post;
   final commentController = Get.put(CommentController());
+  final controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -189,7 +190,7 @@ class CreateCommentView extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                if (commentController.comments.comment!.isEmpty) {
+                if (commentController.comments.value.comment!.isEmpty) {
                   return SizedBox(
                     height: MediaQuery.sizeOf(context).height * 0.2,
                     child: const Center(child: Text('No comments yet.')),
@@ -201,10 +202,11 @@ class CreateCommentView extends StatelessWidget {
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: commentController.comments.comment!.length,
+                      itemCount:
+                          commentController.comments.value.comment!.length,
                       itemBuilder: (context, index) {
                         final comment =
-                            commentController.comments.comment![index];
+                            commentController.comments.value.comment![index];
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 10),
@@ -299,6 +301,7 @@ class CreateCommentView extends StatelessWidget {
           ),
           Expanded(
             child: TextField(
+              controller: controller,
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.grey.shade200,
@@ -321,7 +324,13 @@ class CreateCommentView extends StatelessWidget {
               Iconsax.send_2,
               size: 30,
             ),
-            onPressed: () {},
+            onPressed: () {
+              commentController.createComment(
+                text: controller.text,
+                id: postId.toString(),
+              );
+              controller.clear();
+            },
           ),
         ],
       ),

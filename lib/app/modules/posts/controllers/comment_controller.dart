@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 class CommentController extends GetxController {
   final apiService = AuthService();
   var isLoading = false.obs;
-  CommentResModel comments = CommentResModel();
+  var comments = CommentResModel().obs;
 
   void updateUI(bool state) {
     isLoading.value = state;
@@ -16,10 +16,21 @@ class CommentController extends GetxController {
     try {
       updateUI(true);
       final commentData = await apiService.getComments(postId: id);
-      comments = commentData;
+      comments.value = commentData;
       updateUI(false);
     } catch (e) {
       updateUI(false);
+      Get.snackbar("Error", e.toString());
+    }
+  }
+
+  void createComment({required String text, required String id}) async {
+    try {
+      final status = await apiService.createComment(text: text, postId: id);
+      if (status) {
+        await getComment(id);
+      }
+    } catch (e) {
       Get.snackbar("Error", e.toString());
     }
   }
