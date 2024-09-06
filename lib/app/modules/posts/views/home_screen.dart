@@ -262,7 +262,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                               onPressed: () {
-                                Get.to(() => const CreateCommentView());
+                                Get.to(
+                                  () => CreateCommentView(
+                                    postId: post.id.toString(),
+                                    post: post,
+                                  ),
+                                );
                               },
                               child: const Row(
                                 children: [

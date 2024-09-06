@@ -38,6 +38,18 @@ class PostController extends GetxController {
     }
   }
 
+  Future getPostById(String id) async {
+    try {
+      updateUI(true);
+      final postData = await apiService.getPostById(postId: id);
+      posts = postData;
+      updateUI(false);
+    } catch (e) {
+      updateUI(false);
+      Get.snackbar("Error", e.toString());
+    }
+  }
+
   void deletePost(String id) async {
     try {
       final status = await apiService.deletePost(postId: id);

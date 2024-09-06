@@ -166,6 +166,33 @@ class AuthService {
     }
   }
 
+  // get post
+  Future<PostResModel> getPostById({required String postId}) async {
+    try {
+      final response = await dio.get(
+        "$baseUrl/posts/$postId",
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${box.read('token')}',
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      if (response.statusCode == 200) {
+        return PostResModel.fromJson(response.data);
+      } else if (response.statusCode == 401) {
+        throw Exception("Unauthorized");
+      }
+      throw Exception("Failed to get post");
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   // create post
   Future<bool> createPost(
       {required String caption, required File photo}) async {

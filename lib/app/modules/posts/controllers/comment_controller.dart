@@ -4,11 +4,11 @@ import 'package:get/get.dart';
 
 class CommentController extends GetxController {
   final apiService = AuthService();
-  var isLoading = false;
+  var isLoading = false.obs;
   CommentResModel comments = CommentResModel();
 
   void updateUI(bool state) {
-    isLoading = state;
+    isLoading.value = state;
     update();
   }
 

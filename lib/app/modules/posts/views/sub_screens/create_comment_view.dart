@@ -1,13 +1,22 @@
+import 'package:facebook_clone_app/app/data/models/post_model.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:get/get.dart';
 
+import '../../controllers/comment_controller.dart';
+
 class CreateCommentView extends StatelessWidget {
-  const CreateCommentView({super.key});
+  CreateCommentView({super.key, this.postId, this.post});
+
+  final String? postId;
+  final Data? post;
+  final commentController = Get.put(CommentController());
 
   @override
   Widget build(BuildContext context) {
+    commentController.getComment(postId.toString());
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
@@ -15,15 +24,15 @@ class CreateCommentView extends StatelessWidget {
         shrinkWrap: true,
         physics: const BouncingScrollPhysics(),
         children: [
-          const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Text("Hello guys"),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(post!.caption!),
           ),
           // image
           SizedBox(
             height: MediaQuery.sizeOf(context).height * 0.65,
-            child: Image.asset(
-              'assets/cpspider.jpg',
+            child: Image.network(
+              'http://10.0.2.2:8000/posts/${post!.image.toString()}',
               fit: BoxFit.cover,
             ),
           ),
@@ -46,16 +55,27 @@ class CreateCommentView extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {},
-                child: const Row(
+                child: Row(
                   children: [
-                    Icon(Iconsax.heart_circle),
-                    SizedBox(width: 10),
+                    post!.isLiked!
+                        ? const Icon(
+                            Iconsax.heart_circle5,
+                            color: Colors.pink,
+                          )
+                        : const Icon(Iconsax.heart_circle),
+                    const SizedBox(width: 10),
                     Text(
                       'Love',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 16,
-                      ),
+                      style: post!.isLiked!
+                          ? const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                              color: Colors.pink,
+                            )
+                          : const TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 16,
+                            ),
                     ),
                   ],
                 ),
@@ -121,30 +141,32 @@ class CreateCommentView extends StatelessWidget {
             ],
           ),
           // like count
-          const Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12),
-                child: Row(
+          post!.likesCount! > 0
+              ? Row(
                   children: [
                     Padding(
-                      padding: EdgeInsets.only(left: 16),
-                      child: Icon(
-                        Iconsax.heart_circle5,
-                        color: Colors.pink,
-                      ),
-                    ),
-                    Text(
-                      '10',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Row(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.only(left: 16),
+                            child: Icon(
+                              Iconsax.heart_circle5,
+                              color: Colors.pink,
+                            ),
+                          ),
+                          Text(
+                            '${post!.likesCount}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
-                ),
-              ),
-            ],
-          ),
+                )
+              : const SizedBox.shrink(),
           const SizedBox(height: 5),
           // most relevant
           const Row(
@@ -161,63 +183,95 @@ class CreateCommentView extends StatelessWidget {
           ),
           // comment section
           SizedBox(
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SizedBox(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Align(
-                          alignment: Alignment.topCenter,
-                          child: CircleAvatar(
-                            backgroundImage:
-                                AssetImage("assets/placeholder.jpg"),
-                          ),
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              // width: 300,
-                              margin:
-                                  const EdgeInsets.symmetric(horizontal: 10),
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade200,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: const Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Shinra'),
-                                  Text(
-                                    'what a lovely couple.',
-                                    softWrap: true,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Row(
+            child: Obx(
+              () {
+                if (commentController.isLoading.value) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                if (commentController.comments.comment!.isEmpty) {
+                  return SizedBox(
+                    height: MediaQuery.sizeOf(context).height * 0.2,
+                    child: const Center(child: Text('No comments yet.')),
+                  );
+                }
+                return Column(
+                  children: [
+                    ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: commentController.comments.comment!.length,
+                      itemBuilder: (context, index) {
+                        final comment =
+                            commentController.comments.comment![index];
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 10),
+                          child: SizedBox(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                SizedBox(width: 20),
-                                Text('20m'),
-                                SizedBox(width: 20),
-                                Text('Like'),
-                                SizedBox(width: 20),
-                                Text('Reply'),
+                                Align(
+                                  alignment: Alignment.topCenter,
+                                  child: CircleAvatar(
+                                    backgroundImage: NetworkImage(
+                                        "http://10.0.2.2:8000/images/${comment.user!.profileImage}"),
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      // width: 300,
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 10),
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade200,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text('${comment.user!.name}'),
+                                          Text(
+                                            '${comment.text}',
+                                            softWrap: true,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        const SizedBox(width: 20),
+                                        Text(timeago.format(DateTime.parse(
+                                            comment.createdAt!))),
+                                        const SizedBox(width: 20),
+                                        const Text('Like'),
+                                        const SizedBox(width: 20),
+                                        const Text('Reply'),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ],
                             ),
-                          ],
-                        ),
-                      ],
+                          ),
+                        );
+                      },
                     ),
-                  ),
+                    const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                      child: Text(
+                        'Most relevant is selected, so some comments may have been filtered out.',
+                        style: TextStyle(fontSize: 13),
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+                  ],
                 );
               },
             ),
@@ -286,22 +340,24 @@ class CreateCommentView extends StatelessWidget {
       ),
       title: Row(
         children: [
-          const CircleAvatar(
-            backgroundImage: AssetImage("assets/placeholder.jpg"),
+          CircleAvatar(
+            backgroundImage: NetworkImage(
+                "http://10.0.2.2:8000/images/${post!.user!.profileImage}"),
           ),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Shinra',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                Text(
+                  '${post!.user!.name}',
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16),
                 ),
                 Row(
                   children: [
                     Text(
-                      timeago.format(DateTime.now()),
+                      timeago.format(DateTime.parse(post!.createdAt!)),
                       style: const TextStyle(fontSize: 12),
                     ),
                     const SizedBox(width: 5),
