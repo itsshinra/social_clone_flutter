@@ -15,6 +15,7 @@ class LoginView extends GetView<LoginController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Obx(() {
           if (controller.isLoading.value) {
@@ -48,6 +49,7 @@ class LoginView extends GetView<LoginController> {
                     TextFormField(
                       controller: emailController,
                       decoration: InputDecoration(
+                        fillColor: Colors.grey.shade200,
                         filled: true,
                         hintText: 'Email',
                         border: OutlineInputBorder(
@@ -70,6 +72,7 @@ class LoginView extends GetView<LoginController> {
                       controller: passwordController,
                       obscureText: true,
                       decoration: InputDecoration(
+                        fillColor: Colors.grey.shade200,
                         filled: true,
                         hintText: 'Password',
                         border: OutlineInputBorder(

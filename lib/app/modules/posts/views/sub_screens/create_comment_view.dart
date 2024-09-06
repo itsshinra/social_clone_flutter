@@ -1,4 +1,6 @@
+import 'package:facebook_clone_app/app/data/models/comment_model.dart';
 import 'package:facebook_clone_app/app/data/models/post_model.dart';
+import 'package:facebook_clone_app/app/modules/main/controllers/profile_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -13,11 +15,11 @@ class CreateCommentView extends StatelessWidget {
   final Data? post;
   final commentController = Get.put(CommentController());
   final controller = TextEditingController();
+  final userController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
     commentController.getComment(postId.toString());
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
@@ -207,6 +209,9 @@ class CreateCommentView extends StatelessWidget {
                       itemBuilder: (context, index) {
                         final comment =
                             commentController.comments.value.comment![index];
+                        final isCurrentUser =
+                            comment.userId.toString().trim() ==
+                                commentController.currentUserId?.trim();
                         return Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16, vertical: 10),
@@ -254,6 +259,38 @@ class CreateCommentView extends StatelessWidget {
                                         const Text('Like'),
                                         const SizedBox(width: 20),
                                         const Text('Reply'),
+                                        if (isCurrentUser)
+                                          Row(
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Iconsax.edit_2,
+                                                  size: 18,
+                                                ),
+                                                onPressed: () {
+                                                  print(
+                                                      'comment id: ${comment.id}');
+                                                  print(
+                                                      'comment text: ${comment.text}');
+                                                  _showEditBottomSheet(
+                                                      context,
+                                                      comment.id.toString(),
+                                                      comment.text.toString());
+                                                },
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Iconsax.trash,
+                                                  size: 18,
+                                                  color: Colors.red,
+                                                ),
+                                                onPressed: () {
+                                                  _deleteComment(
+                                                      context, comment);
+                                                },
+                                              ),
+                                            ],
+                                          ),
                                       ],
                                     ),
                                   ],
@@ -281,6 +318,160 @@ class CreateCommentView extends StatelessWidget {
         ],
       ),
       bottomSheet: _bottomTextField(),
+    );
+  }
+
+  Future<dynamic> _deleteComment(BuildContext context, Comment comment) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete comment'),
+        content: const Text('Are you sure you want to delete this comment?'),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Get.back();
+            },
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(Colors.grey.shade300),
+              shape: WidgetStateProperty.all(
+                const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              commentController.deleteCommnet(
+                comment.id.toString(),
+                post!.id.toString(),
+              );
+              Get.back();
+            },
+            style: ButtonStyle(
+              backgroundColor: const WidgetStatePropertyAll(Colors.red),
+              shape: WidgetStateProperty.all(
+                const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showEditBottomSheet(
+      BuildContext context, String commentId, String oldText) {
+    final editController = TextEditingController(text: oldText);
+
+    showModalBottomSheet(
+      backgroundColor: Colors.white,
+      context: context,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 8, top: 8),
+                  child: CircleAvatar(
+                    radius: 13,
+                    backgroundImage: NetworkImage(
+                        "http://10.0.2.2:8000/images/${userController.user.user!.profileImage!}"),
+                  ),
+                ),
+                Expanded(
+                  child: TextField(
+                    controller: editController,
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          borderSide: const BorderSide(color: Colors.grey)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 16),
+                      hintText: 'Enter your comment',
+                    ),
+                    maxLines: 5,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  style: ButtonStyle(
+                    backgroundColor:
+                        WidgetStatePropertyAll(Colors.grey.shade300),
+                    shape: WidgetStateProperty.all(
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  child: const Text(
+                    'Cancel',
+                    style: TextStyle(color: Colors.black),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                ElevatedButton(
+                  onPressed: () {
+                    commentController.updateComment(
+                      commentId: commentId,
+                      text: editController.text.toString(),
+                      postId: post!.id.toString(),
+                    );
+                    Get.back();
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: const WidgetStatePropertyAll(Colors.blue),
+                    shape: WidgetStateProperty.all(
+                      const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  child: const Text(
+                    'Update',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
     );
   }
 

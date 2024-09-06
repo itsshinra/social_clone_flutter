@@ -166,7 +166,7 @@ class AuthService {
     }
   }
 
-  // get post
+  // get postById
   Future<PostResModel> getPostById({required String postId}) async {
     try {
       final response = await dio.get(
@@ -331,6 +331,64 @@ class AuthService {
         return true;
       }
       throw Exception("Failed to create a comment");
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // update comments
+  Future<bool> updateComment({
+    required String text,
+    required String commentId,
+  }) async {
+    try {
+      var formData = FormData.fromMap({"text": text});
+      final response = await dio.put(
+        data: formData,
+        "$baseUrl/comments/$commentId",
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${box.read('token')}',
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+      print("Response: ${response.statusCode}, Data: ${response.data}");
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+      throw Exception("Failed to update a comment");
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  // delete comment
+  Future<bool> deleteComment({required String commentId}) async {
+    try {
+      final response = await dio.delete(
+        "$baseUrl/comments/$commentId",
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${box.read('token')}',
+          },
+          followRedirects: false,
+          validateStatus: (status) {
+            return status! < 500;
+          },
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        return true;
+      }
+      throw Exception("Failed to delete this comment");
     } catch (e) {
       rethrow;
     }

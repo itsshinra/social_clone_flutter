@@ -13,6 +13,7 @@ class SignupView extends GetView<SingupController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Obx(
           () {
@@ -69,6 +70,7 @@ class SignupView extends GetView<SingupController> {
                         TextFormField(
                           controller: nameController,
                           decoration: InputDecoration(
+                            fillColor: Colors.grey.shade200,
                             filled: true,
                             hintText: 'Name',
                             border: OutlineInputBorder(
@@ -87,6 +89,7 @@ class SignupView extends GetView<SingupController> {
                         TextFormField(
                           controller: emailController,
                           decoration: InputDecoration(
+                            fillColor: Colors.grey.shade200,
                             filled: true,
                             hintText: 'Email',
                             border: OutlineInputBorder(
@@ -109,6 +112,7 @@ class SignupView extends GetView<SingupController> {
                           controller: passwordController,
                           obscureText: true,
                           decoration: InputDecoration(
+                            fillColor: Colors.grey.shade200,
                             filled: true,
                             hintText: 'Password',
                             border: OutlineInputBorder(
