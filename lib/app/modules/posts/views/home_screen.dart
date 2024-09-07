@@ -2,6 +2,7 @@ import 'package:facebook_clone_app/app/modules/main/controllers/profile_controll
 import 'package:facebook_clone_app/app/modules/main/views/screens/search_screen.dart';
 import 'package:facebook_clone_app/app/modules/posts/controllers/post_controller.dart';
 import 'package:facebook_clone_app/app/modules/posts/views/sub_screens/create_comment_view.dart';
+import 'package:facebook_clone_app/app/modules/posts/views/sub_screens/update_post_view.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
@@ -47,6 +48,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemCount: controller.posts.posts!.data!.length,
                   itemBuilder: (context, index) {
                     final post = controller.posts.posts!.data![index];
+                    final isCurrentUser = post.userId.toString().trim() ==
+                        controller.currentUserId?.trim();
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -100,10 +103,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: PopupMenuButton(
                                   color: Colors.white,
                                   onSelected: (value) {
-                                    if (value == "Edit") {
-                                      // Get.to(()=> EditPost());
-                                    } else {
+                                    if (value == "Edit" && isCurrentUser) {
+                                      Get.to(
+                                        () => UpdatePostView(
+                                          postId: post.id.toString(),
+                                          oldCaption: post.caption!,
+                                          oldImage: post.image,
+                                        ),
+                                      );
+                                    } else if (value == "Delete") {
                                       controller.deletePost(post.id.toString());
+                                    } else if (value == "Edit" &&
+                                        !isCurrentUser) {
+                                      Get.snackbar(
+                                        "Error",
+                                        "You are not authorized to edit this post.",
+                                        backgroundColor: Colors.red,
+                                        colorText: Colors.white,
+                                      );
                                     }
                                   },
                                   itemBuilder: (context) {

@@ -3,6 +3,7 @@ import 'package:facebook_clone_app/app/data/models/post_model.dart';
 import 'package:facebook_clone_app/app/data/providers/auth_service.dart';
 import 'package:facebook_clone_app/app/modules/posts/views/sub_screens/create_post_view.dart';
 import 'package:facebook_clone_app/app/services/internet_checker_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -14,16 +15,29 @@ class PostController extends GetxController {
   final _imagePicker = ImagePicker();
   File? image;
 
+  String? currentUserId;
+
   @override
   void onInit() {
     checkInternet();
     getPosts();
     super.onInit();
+    _fetchCurrentUser();
   }
 
   void updateUI(bool state) {
     isLoading = state;
     update();
+  }
+
+  Future<void> _fetchCurrentUser() async {
+    try {
+      final user = await apiService.getCurrentUser();
+      currentUserId = user.user!.id.toString();
+      update();
+    } catch (e) {
+      Get.snackbar("Error", e.toString());
+    }
   }
 
   Future getPosts() async {
@@ -34,7 +48,8 @@ class PostController extends GetxController {
       updateUI(false);
     } catch (e) {
       updateUI(false);
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("Error", e.toString(),
+          backgroundColor: Colors.red, colorText: Colors.white);
     }
   }
 
@@ -50,15 +65,39 @@ class PostController extends GetxController {
     }
   }
 
+  void updatePost({
+    required String postId,
+    required String caption,
+    required File? photo,
+  }) async {
+    try {
+      final status = await apiService.updatePost(
+        caption: caption,
+        photo: photo,
+        postId: postId,
+      );
+      if (status) {
+        Get.back(result: true);
+        Get.snackbar("Success", "Post updated successfully",
+            backgroundColor: Colors.green, colorText: Colors.white);
+      }
+    } catch (e) {
+      Get.snackbar("Error", "Failed to update post: ${e.toString()}",
+          backgroundColor: Colors.red, colorText: Colors.white);
+    }
+  }
+
   void deletePost(String id) async {
     try {
       final status = await apiService.deletePost(postId: id);
       if (status) {
-        Get.snackbar("Success", "Post deleted successfully");
+        Get.snackbar("Success", "Post deleted successfully",
+            backgroundColor: Colors.green, colorText: Colors.white);
         getPosts();
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      Get.snackbar("Error", e.toString(),
+          backgroundColor: Colors.red, colorText: Colors.white);
     }
   }
 

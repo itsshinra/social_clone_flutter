@@ -224,6 +224,45 @@ class AuthService {
     }
   }
 
+  // update post
+  Future<bool> updatePost({
+    required String caption,
+    required File? photo,
+    required String postId,
+  }) async {
+    try {
+      var formData = FormData.fromMap({
+        'caption': caption,
+        if (photo != null) 'image': await MultipartFile.fromFile(photo.path),
+      });
+
+      final response = await dio.post(
+        "$baseUrl/posts/$postId",
+        data: formData,
+        options: Options(
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer ${box.read('token')}',
+          },
+          followRedirects: false,
+          validateStatus: (status) => status! < 500,
+        ),
+      );
+
+      print("Response: ${response.statusCode}, Data: ${response.data}");
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw Exception(
+            "Failed to update post. Status code: ${response.statusCode}");
+      }
+    } catch (e) {
+      // Handle and log the error
+      print("Error updating post: $e");
+      rethrow;
+    }
+  }
+
   // Delete post
   Future<bool> deletePost({required String postId}) async {
     try {
