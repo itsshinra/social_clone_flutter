@@ -1,3 +1,4 @@
+import 'package:facebook_clone_app/app/data/models/post_model.dart';
 import 'package:facebook_clone_app/app/modules/main/controllers/profile_controller.dart';
 import 'package:facebook_clone_app/app/modules/main/views/screens/search_screen.dart';
 import 'package:facebook_clone_app/app/modules/posts/controllers/post_controller.dart';
@@ -50,298 +51,339 @@ class _HomeScreenState extends State<HomeScreen> {
                     final post = controller.posts.posts!.data![index];
                     final isCurrentUser = post.userId.toString().trim() ==
                         controller.currentUserId?.trim();
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Profile pic, name
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: [
-                              post.user!.profileImage != null
-                                  ? CircleAvatar(
-                                      radius: 22,
-                                      backgroundImage: NetworkImage(
-                                          "http://10.0.2.2:8000/images/${post.user!.profileImage!}"),
-                                    )
-                                  : const CircleAvatar(
-                                      backgroundImage:
-                                          AssetImage("assets/placeholder.jpg"),
-                                    ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${post.user!.name}',
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 17),
-                                    ),
-                                    Row(
-                                      children: [
-                                        Text(
-                                          timeago.format(
-                                              DateTime.parse(post.createdAt!)),
-                                          style: const TextStyle(fontSize: 12),
-                                        ),
-                                        const SizedBox(width: 5),
-                                        const Icon(
-                                          Iconsax.global5,
-                                          size: 14,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const Spacer(),
-                              // Menu botton
-                              Transform.rotate(
-                                angle: 90 * 3.14159 / 180,
-                                child: PopupMenuButton(
-                                  color: Colors.white,
-                                  onSelected: (value) {
-                                    if (value == "Edit" && isCurrentUser) {
-                                      Get.to(
-                                        () => UpdatePostView(
-                                          postId: post.id.toString(),
-                                          oldCaption: post.caption!,
-                                          oldImage: post.image,
-                                        ),
-                                      );
-                                    } else if (value == "Delete") {
-                                      controller.deletePost(post.id.toString());
-                                    } else if (value == "Edit" &&
-                                        !isCurrentUser) {
-                                      Get.snackbar(
-                                        "Error",
-                                        "You are not authorized to edit this post.",
-                                        backgroundColor: Colors.red,
-                                        colorText: Colors.white,
-                                      );
-                                    }
-                                  },
-                                  itemBuilder: (context) {
-                                    return [
-                                      const PopupMenuItem(
-                                        value: "Edit",
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 8.0),
-                                              child: Icon(Icons.edit),
-                                            ),
-                                            Text(
-                                              'Edit post',
-                                              style: TextStyle(fontSize: 15),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      const PopupMenuItem(
-                                        value: "Delete",
-                                        child: Row(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 8.0),
-                                              child: Icon(Iconsax.trash),
-                                            ),
-                                            Text(
-                                              'Move to trash',
-                                              style: TextStyle(fontSize: 15),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ];
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 15),
-                              const Icon(Icons.close),
-                            ],
-                          ),
-                        ),
-                        // caption
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text("${post.caption}"),
-                        ),
-                        // image
-                        Image.network(
-                          'http://10.0.2.2:8000/posts/${post.image}',
-                        ),
-                        const SizedBox(height: 10),
-                        // Like, Comment, Share Count
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            // like
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 12),
-                              child: post.likesCount! > 0
-                                  ? Row(
-                                      children: [
-                                        const Padding(
-                                          padding: EdgeInsets.only(left: 8.0),
-                                          child: Icon(
-                                            Iconsax.heart_circle5,
-                                            color: Colors.pink,
-                                          ),
-                                        ),
-                                        const SizedBox(width: 5),
-                                        Text('${post.likesCount}'),
-                                      ],
-                                    )
-                                  : const SizedBox.shrink(),
-                            ),
-                            // comment
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: Row(
-                                children: [
-                                  if (post.commentsCount! > 0)
-                                    Text('${post.commentsCount} comments'),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        // Like, Comment, Share button
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            // like button
-                            ElevatedButton(
-                              style: const ButtonStyle(
-                                elevation: WidgetStatePropertyAll(0),
-                                backgroundColor:
-                                    WidgetStatePropertyAll(Colors.transparent),
-                                foregroundColor:
-                                    WidgetStatePropertyAll(Colors.black),
-                                shape: WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                controller.likeDislike(
-                                    post.id.toString(), index);
-                              },
-                              child: Row(
-                                children: [
-                                  post.isLiked!
-                                      ? const Icon(
-                                          Iconsax.heart_circle5,
-                                          color: Colors.pink,
-                                        )
-                                      : const Icon(Iconsax.heart_circle),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    'Love',
-                                    style: post.isLiked!
-                                        ? const TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16,
-                                            color: Colors.pink,
-                                          )
-                                        : const TextStyle(
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 16,
-                                          ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // comment button
-                            ElevatedButton(
-                              style: const ButtonStyle(
-                                elevation: WidgetStatePropertyAll(0),
-                                backgroundColor:
-                                    WidgetStatePropertyAll(Colors.transparent),
-                                foregroundColor:
-                                    WidgetStatePropertyAll(Colors.black),
-                                shape: WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {
-                                Get.to(
-                                  () => CreateCommentView(
-                                    postId: post.id.toString(),
-                                    post: post,
-                                  ),
-                                );
-                              },
-                              child: const Row(
-                                children: [
-                                  Icon(Iconsax.message),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    'Comment',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            // share button
-                            ElevatedButton(
-                              style: const ButtonStyle(
-                                elevation: WidgetStatePropertyAll(0),
-                                backgroundColor:
-                                    WidgetStatePropertyAll(Colors.transparent),
-                                foregroundColor:
-                                    WidgetStatePropertyAll(Colors.black),
-                                shape: WidgetStatePropertyAll(
-                                  RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(8),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              onPressed: () {},
-                              child: const Row(
-                                children: [
-                                  Icon(Iconsax.send_2),
-                                  SizedBox(width: 10),
-                                  Text(
-                                    'Share',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Divider(thickness: 4),
-                      ],
-                    );
+                    return _postSection(post, isCurrentUser, controller, index);
                   },
                 ),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Column _postSection(
+      Data post, bool isCurrentUser, PostController controller, int index) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Profile pic, name
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              post.user!.profileImage != null
+                  ? CircleAvatar(
+                      radius: 22,
+                      backgroundImage: NetworkImage(
+                          "http://10.0.2.2:8000/images/${post.user!.profileImage!}"),
+                    )
+                  : const CircleAvatar(
+                      backgroundImage: AssetImage("assets/placeholder.jpg"),
+                    ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '${post.user!.name}',
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 17),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          timeago.format(DateTime.parse(post.createdAt!)),
+                          style: const TextStyle(fontSize: 12),
+                        ),
+                        const SizedBox(width: 5),
+                        const Icon(
+                          Iconsax.global5,
+                          size: 14,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const Spacer(),
+              // Menu botton
+              Transform.rotate(
+                angle: 90 * 3.14159 / 180,
+                child: PopupMenuButton(
+                  color: Colors.white,
+                  onSelected: (value) {
+                    if (value == "Edit" && isCurrentUser) {
+                      Get.to(
+                        () => UpdatePostView(
+                          postId: post.id.toString(),
+                          oldCaption: post.caption!,
+                          oldImage: post.image,
+                        ),
+                      );
+                    } else if (value == "Delete") {
+                      _deletePostDialog(controller, post);
+                    } else if (value == "Edit" && !isCurrentUser) {
+                      Get.snackbar(
+                        "Error",
+                        "You are not authorized to edit this post.",
+                        backgroundColor: Colors.red,
+                        colorText: Colors.white,
+                      );
+                    }
+                  },
+                  itemBuilder: (context) {
+                    return [
+                      const PopupMenuItem(
+                        value: "Edit",
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Icon(Icons.edit),
+                            ),
+                            Text(
+                              'Edit post',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: "Delete",
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Icon(Iconsax.trash),
+                            ),
+                            Text(
+                              'Move to trash',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ];
+                  },
+                ),
+              ),
+              const SizedBox(width: 15),
+              const Icon(Icons.close),
+            ],
+          ),
+        ),
+        // caption
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("${post.caption}"),
+        ),
+        // image
+        Image.network(
+          'http://10.0.2.2:8000/posts/${post.image}',
+        ),
+        const SizedBox(height: 10),
+        // Like, Comment, Share Count
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // like
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: post.likesCount! > 0
+                  ? Row(
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8.0),
+                          child: Icon(
+                            Iconsax.heart_circle5,
+                            color: Colors.pink,
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Text('${post.likesCount}'),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+            ),
+            // comment
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  if (post.commentsCount! > 0)
+                    Text('${post.commentsCount} comments'),
+                ],
+              ),
+            ),
+          ],
+        ),
+        // Like, Comment, Share button
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // like button
+            ElevatedButton(
+              style: const ButtonStyle(
+                elevation: WidgetStatePropertyAll(0),
+                backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                foregroundColor: WidgetStatePropertyAll(Colors.black),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              onPressed: () {
+                controller.likeDislike(post.id.toString(), index);
+              },
+              child: Row(
+                children: [
+                  post.isLiked!
+                      ? const Icon(
+                          Iconsax.heart_circle5,
+                          color: Colors.pink,
+                        )
+                      : const Icon(Iconsax.heart_circle),
+                  const SizedBox(width: 10),
+                  Text(
+                    'Love',
+                    style: post.isLiked!
+                        ? const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            color: Colors.pink,
+                          )
+                        : const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                  ),
+                ],
+              ),
+            ),
+            // comment button
+            ElevatedButton(
+              style: const ButtonStyle(
+                elevation: WidgetStatePropertyAll(0),
+                backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                foregroundColor: WidgetStatePropertyAll(Colors.black),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              onPressed: () {
+                Get.to(
+                  () => CreateCommentView(
+                    postId: post.id.toString(),
+                    post: post,
+                  ),
+                );
+              },
+              child: const Row(
+                children: [
+                  Icon(Iconsax.message),
+                  SizedBox(width: 10),
+                  Text(
+                    'Comment',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // share button
+            ElevatedButton(
+              style: const ButtonStyle(
+                elevation: WidgetStatePropertyAll(0),
+                backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                foregroundColor: WidgetStatePropertyAll(Colors.black),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              onPressed: () {},
+              child: const Row(
+                children: [
+                  Icon(Iconsax.send_2),
+                  SizedBox(width: 10),
+                  Text(
+                    'Share',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const Divider(thickness: 4),
+      ],
+    );
+  }
+
+  Future<dynamic> _deletePostDialog(PostController controller, Data post) {
+    return showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete Post'),
+        content: const Text('Are you sure you want to delete this post?'),
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Get.back();
+            },
+            style: ButtonStyle(
+              backgroundColor: WidgetStatePropertyAll(Colors.grey.shade300),
+              shape: WidgetStateProperty.all(
+                const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+            child: const Text(
+              'Cancel',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              controller.deletePost(post.id.toString());
+              Get.back();
+            },
+            style: ButtonStyle(
+              backgroundColor: const WidgetStatePropertyAll(Colors.red),
+              shape: WidgetStateProperty.all(
+                const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
       ),
     );
   }

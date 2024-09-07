@@ -78,6 +78,7 @@ class PostController extends GetxController {
       );
       if (status) {
         Get.back(result: true);
+        await getPosts();
         Get.snackbar("Success", "Post updated successfully",
             backgroundColor: Colors.green, colorText: Colors.white);
       }

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:facebook_clone_app/app/modules/posts/controllers/post_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:image_picker/image_picker.dart';
 
 class UpdatePostView extends StatefulWidget {
@@ -54,7 +55,55 @@ class _UpdatePostViewState extends State<UpdatePostView> {
       appBar: AppBar(
         leading: IconButton(
           onPressed: () {
-            Get.back();
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                content:
+                    const Text("If you discard now, you'll lose this post."),
+                actions: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStatePropertyAll(Colors.grey.shade300),
+                      shape: WidgetStateProperty.all(
+                        const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                    child: const Text(
+                      'Keep editing',
+                      style:
+                          TextStyle(color: Color.fromARGB(255, 44, 134, 207)),
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Get.offAllNamed('/main');
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: const WidgetStatePropertyAll(Colors.red),
+                      shape: WidgetStateProperty.all(
+                        const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(8),
+                          ),
+                        ),
+                      ),
+                    ),
+                    child: const Text(
+                      'Discard Editing',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ],
+              ),
+            );
           },
           icon: const Icon(Icons.close),
         ),
@@ -101,14 +150,69 @@ class _UpdatePostViewState extends State<UpdatePostView> {
               Image.network("http://10.0.2.2:8000/posts/${widget.oldImage!}")
             else if (photo != null)
               Image.file(photo!),
-            IconButton(
-              icon: const Icon(Icons.photo),
-              onPressed: () {
-                _pickImage();
-              },
-            ),
           ],
         ),
+      ),
+      bottomNavigationBar: _bottomBar(),
+    );
+  }
+
+  Container _bottomBar() {
+    return Container(
+      height: 80,
+      decoration: const BoxDecoration(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(color: Colors.grey, blurRadius: 10, offset: Offset(0, 2))
+        ],
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          IconButton(
+            icon: const Icon(
+              Iconsax.gallery5,
+              color: Colors.green,
+            ),
+            onPressed: () {
+              _pickImage();
+            },
+          ),
+          IconButton(
+            icon: const Icon(
+              Iconsax.tag_user5,
+              color: Color.fromARGB(255, 52, 127, 189),
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(
+              Iconsax.emoji_happy,
+              color: Color.fromARGB(255, 211, 136, 39),
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(
+              Iconsax.location5,
+              color: Color.fromARGB(255, 148, 56, 3),
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(
+              Icons.camera_alt,
+              color: Color.fromARGB(255, 52, 127, 189),
+            ),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Iconsax.attach_circle),
+            onPressed: () {},
+          ),
+        ],
       ),
     );
   }
