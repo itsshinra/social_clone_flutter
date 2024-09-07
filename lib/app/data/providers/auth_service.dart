@@ -342,7 +342,10 @@ class AuthService {
     required String commentId,
   }) async {
     try {
-      var formData = FormData.fromMap({"text": text});
+      // var formData = FormData.fromMap({"text": text});
+      final formData = {
+        "text": text,
+      };
       final response = await dio.put(
         data: formData,
         "$baseUrl/comments/$commentId",

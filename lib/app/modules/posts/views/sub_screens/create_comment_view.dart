@@ -198,126 +198,118 @@ class CreateCommentView extends StatelessWidget {
                     child: const Center(child: Text('No comments yet.')),
                   );
                 }
-                return Column(
-                  children: [
-                    ListView.builder(
-                      scrollDirection: Axis.vertical,
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount:
-                          commentController.comments.value.comment!.length,
-                      itemBuilder: (context, index) {
-                        final comment =
-                            commentController.comments.value.comment![index];
-                        final isCurrentUser =
-                            comment.userId.toString().trim() ==
-                                commentController.currentUserId?.trim();
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 10),
-                          child: SizedBox(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Align(
-                                  alignment: Alignment.topCenter,
-                                  child: CircleAvatar(
-                                    backgroundImage: NetworkImage(
-                                        "http://10.0.2.2:8000/images/${comment.user!.profileImage}"),
-                                  ),
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      // width: 300,
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey.shade200,
-                                        borderRadius: BorderRadius.circular(20),
-                                      ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text('${comment.user!.name}'),
-                                          Text(
-                                            '${comment.text}',
-                                            softWrap: true,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Row(
-                                      children: [
-                                        const SizedBox(width: 20),
-                                        Text(timeago.format(DateTime.parse(
-                                            comment.createdAt!))),
-                                        const SizedBox(width: 20),
-                                        const Text('Like'),
-                                        const SizedBox(width: 20),
-                                        const Text('Reply'),
-                                        if (isCurrentUser)
-                                          Row(
-                                            children: [
-                                              IconButton(
-                                                icon: const Icon(
-                                                  Iconsax.edit_2,
-                                                  size: 18,
-                                                ),
-                                                onPressed: () {
-                                                  print(
-                                                      'comment id: ${comment.id}');
-                                                  print(
-                                                      'comment text: ${comment.text}');
-                                                  _showEditBottomSheet(
-                                                      context,
-                                                      comment.id.toString(),
-                                                      comment.text.toString());
-                                                },
-                                              ),
-                                              IconButton(
-                                                icon: const Icon(
-                                                  Iconsax.trash,
-                                                  size: 18,
-                                                  color: Colors.red,
-                                                ),
-                                                onPressed: () {
-                                                  _deleteComment(
-                                                      context, comment);
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    const Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                      child: Text(
-                        'Most relevant is selected, so some comments may have been filtered out.',
-                        style: TextStyle(fontSize: 13),
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-                  ],
-                );
+                return _commentList();
               },
             ),
           ),
         ],
       ),
       bottomSheet: _bottomTextField(),
+    );
+  }
+
+  Column _commentList() {
+    return Column(
+      children: [
+        ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: commentController.comments.value.comment!.length,
+          itemBuilder: (context, index) {
+            final comment = commentController.comments.value.comment![index];
+            final isCurrentUser = comment.userId.toString().trim() ==
+                commentController.currentUserId?.trim();
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: SizedBox(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: CircleAvatar(
+                        backgroundImage: NetworkImage(
+                            "http://10.0.2.2:8000/images/${comment.user!.profileImage}"),
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          // width: 300,
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade200,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('${comment.user!.name}'),
+                              Text(
+                                '${comment.text}',
+                                softWrap: true,
+                              ),
+                            ],
+                          ),
+                        ),
+                        Row(
+                          children: [
+                            const SizedBox(width: 20),
+                            Text(timeago
+                                .format(DateTime.parse(comment.createdAt!))),
+                            const SizedBox(width: 20),
+                            const Text('Like'),
+                            const SizedBox(width: 20),
+                            const Text('Reply'),
+                            if (isCurrentUser)
+                              Row(
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(
+                                      Iconsax.edit_2,
+                                      size: 18,
+                                    ),
+                                    onPressed: () {
+                                      _showEditBottomSheet(
+                                          context,
+                                          comment.id.toString(),
+                                          comment.text.toString());
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(
+                                      Iconsax.trash,
+                                      size: 18,
+                                      color: Colors.red,
+                                    ),
+                                    onPressed: () {
+                                      _deleteComment(context, comment);
+                                    },
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+        const Padding(
+          padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+          child: Text(
+            'Most relevant is selected, so some comments may have been filtered out.',
+            style: TextStyle(fontSize: 13),
+          ),
+        ),
+        const SizedBox(height: 50),
+      ],
     );
   }
 
@@ -446,10 +438,11 @@ class CreateCommentView extends StatelessWidget {
                   onPressed: () {
                     commentController.updateComment(
                       commentId: commentId,
-                      text: editController.text.toString(),
+                      text: editController.text,
                       postId: post!.id.toString(),
                     );
                     Get.back();
+                    print('Comment updated: ${editController.text}');
                   },
                   style: ButtonStyle(
                     backgroundColor: const WidgetStatePropertyAll(Colors.blue),
