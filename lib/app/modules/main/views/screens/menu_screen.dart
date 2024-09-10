@@ -4,6 +4,7 @@ import 'package:facebook_clone_app/app/modules/main/views/screens/profile_screen
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 // ignore: must_be_immutable
 class MenuScreen extends GetView<MainController> {
@@ -12,6 +13,7 @@ class MenuScreen extends GetView<MainController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: _appBar(),
       body: ListView(
         padding: const EdgeInsets.all(8),
@@ -41,7 +43,7 @@ class MenuScreen extends GetView<MainController> {
     );
   }
 
-  Card _darkMode() {
+  Widget _darkMode() {
     return Card(
       color: Colors.white,
       child: ListTile(
@@ -94,7 +96,7 @@ class MenuScreen extends GetView<MainController> {
           init: ProfileController(),
           builder: (userController) {
             if (userController.isLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return _loadingSkeleton();
             }
             return Row(
               children: [
@@ -133,6 +135,30 @@ class MenuScreen extends GetView<MainController> {
     );
   }
 
+  Widget _loadingSkeleton() {
+    return const Center(
+      child: Skeletonizer(
+        enabled: true,
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 25,
+              backgroundImage: AssetImage('assets/placeholder.jpg'),
+            ),
+            SizedBox(width: 15),
+            Text(
+              'username',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _memoriesGrid() {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -152,6 +178,12 @@ class MenuScreen extends GetView<MainController> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.shade300,
+                blurRadius: 2,
+              )
+            ],
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

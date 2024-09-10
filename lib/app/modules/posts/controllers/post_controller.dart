@@ -78,9 +78,9 @@ class PostController extends GetxController {
       );
       if (status) {
         Get.back(result: true);
-        await getPosts();
         Get.snackbar("Success", "Post updated successfully",
             backgroundColor: Colors.green, colorText: Colors.white);
+        await getPosts();
       }
     } catch (e) {
       Get.snackbar("Error", "Failed to update post: ${e.toString()}",

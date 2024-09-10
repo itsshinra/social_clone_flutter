@@ -16,79 +16,327 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: _appBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GetBuilder<ProfileController>(
-          init: ProfileController(),
-          builder: (controller) {
-            if (controller.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            final user = controller.user.user;
-            return ListView(
-              physics: const BouncingScrollPhysics(),
-              children: [
-                const SizedBox(height: 55),
-                Stack(
+      body: GetBuilder<ProfileController>(
+        init: ProfileController(),
+        builder: (controller) {
+          if (controller.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final user = controller.user.user;
+          return ListView(
+            physics: const BouncingScrollPhysics(),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CircleAvatar(
-                      radius: 84,
-                      backgroundColor: Colors.black,
-                      child: controller.user.user == null &&
-                              controller.user.user?.profileImage == null
-                          ? const CircleAvatar(
-                              radius: 80,
-                              backgroundImage: NetworkImage(
-                                  'https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg'),
-                            )
-                          : CircleAvatar(
-                              radius: 80,
-                              backgroundImage: NetworkImage(
-                                "http://10.0.2.2:8000/images/${controller.user.user!.profileImage!}",
-                              ),
+                    const SizedBox(height: 55),
+                    Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 84,
+                          backgroundColor: Colors.black,
+                          child: controller.user.user == null &&
+                                  controller.user.user?.profileImage == null
+                              ? const CircleAvatar(
+                                  radius: 80,
+                                  backgroundImage: NetworkImage(
+                                      'https://i.pinimg.com/736x/c0/74/9b/c0749b7cc401421662ae901ec8f9f660.jpg'),
+                                )
+                              : CircleAvatar(
+                                  radius: 80,
+                                  backgroundImage: NetworkImage(
+                                    "http://10.0.2.2:8000/images/${controller.user.user!.profileImage!}",
+                                  ),
+                                ),
+                        ),
+                        Positioned(
+                          left: 110,
+                          bottom: 0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade200,
+                              shape: BoxShape.circle,
                             ),
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.camera_alt_rounded),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                    Positioned(
-                      left: 110,
-                      bottom: 0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade200,
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.camera_alt_rounded),
-                        ),
+                    const SizedBox(height: 10),
+                    Text(
+                      '${user!.name}',
+                      style: const TextStyle(
+                        fontSize: 26,
+                        fontWeight: FontWeight.bold,
                       ),
+                    ),
+                    Text('${user.email}'),
+                    const SizedBox(height: 8),
+                    _buttonAddtoStory(),
+                    const SizedBox(height: 16),
+                    _postRow(),
+                    const SizedBox(height: 16),
+                    _detailColumn(),
+                    const SizedBox(height: 16),
+                    _storyRow(),
+                    const SizedBox(height: 10),
+                    _editPublicDetailButton(),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+              _postList()
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _postList() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: 5,
+      itemBuilder: (context, index) {
+        return _postItem();
+      },
+    );
+  }
+
+  Column _postItem() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Profile pic, name
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              const CircleAvatar(
+                radius: 22,
+                backgroundImage: AssetImage("assets/spider.jpg"),
+              ),
+              const Padding(
+                padding: EdgeInsets.only(left: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'username',
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 17),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "24 minutes ago",
+                          style: TextStyle(fontSize: 12),
+                        ),
+                        SizedBox(width: 5),
+                        Icon(
+                          Iconsax.global5,
+                          size: 14,
+                        ),
+                      ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  '${user!.name}',
-                  style: const TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
+              ),
+              const Spacer(),
+              // Menu botton
+              Transform.rotate(
+                angle: 90 * 3.14159 / 180,
+                child: PopupMenuButton(
+                  color: Colors.white,
+                  onSelected: (value) {},
+                  itemBuilder: (context) {
+                    return [
+                      const PopupMenuItem(
+                        value: "Edit",
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Icon(Icons.edit),
+                            ),
+                            Text(
+                              'Edit post',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const PopupMenuItem(
+                        value: "Delete",
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Icon(Iconsax.trash),
+                            ),
+                            Text(
+                              'Move to trash',
+                              style: TextStyle(fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ];
+                  },
+                ),
+              ),
+              const SizedBox(width: 15),
+              const Icon(Icons.close),
+            ],
+          ),
+        ),
+        // caption
+        const Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Text("Hello everyone!"),
+        ),
+        // image
+        Image.asset(
+          'assets/spider.jpg',
+        ),
+        const SizedBox(height: 10),
+        // Like, Comment, Share Count
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // like
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(left: 8.0),
+                    child: Icon(
+                      Iconsax.heart_circle5,
+                      color: Colors.pink,
+                    ),
+                  ),
+                  SizedBox(width: 5),
+                  Text('0'),
+                ],
+              ),
+            ),
+            // comment
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  Text('0 comments'),
+                ],
+              ),
+            ),
+          ],
+        ),
+        // Like, Comment, Share button
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            // like button
+            ElevatedButton(
+              style: const ButtonStyle(
+                elevation: WidgetStatePropertyAll(0),
+                backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                foregroundColor: WidgetStatePropertyAll(Colors.black),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
                   ),
                 ),
-                Text('${user.email}'),
-                const SizedBox(height: 8),
-                _buttonAddtoStory(),
-                const SizedBox(height: 16),
-                _postRow(),
-                const SizedBox(height: 16),
-                _detailColumn(),
-                const SizedBox(height: 16),
-                _storyRow(),
-                const SizedBox(height: 10),
-                _editPublicDetailButton(),
-                const SizedBox(height: 16),
-              ],
-            );
-          },
+              ),
+              onPressed: () {},
+              child: const Row(
+                children: [
+                  Icon(
+                    Iconsax.heart_circle5,
+                    color: Colors.pink,
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    'Love',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                      color: Colors.pink,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // comment button
+            ElevatedButton(
+              style: const ButtonStyle(
+                elevation: WidgetStatePropertyAll(0),
+                backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                foregroundColor: WidgetStatePropertyAll(Colors.black),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              onPressed: () {},
+              child: const Row(
+                children: [
+                  Icon(Iconsax.message),
+                  SizedBox(width: 10),
+                  Text(
+                    'Comment',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // share button
+            ElevatedButton(
+              style: const ButtonStyle(
+                elevation: WidgetStatePropertyAll(0),
+                backgroundColor: WidgetStatePropertyAll(Colors.transparent),
+                foregroundColor: WidgetStatePropertyAll(Colors.black),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(8),
+                    ),
+                  ),
+                ),
+              ),
+              onPressed: () {},
+              child: const Row(
+                children: [
+                  Icon(Iconsax.send_2),
+                  SizedBox(width: 10),
+                  Text(
+                    'Share',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 16,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-      ),
+        const Divider(thickness: 4),
+      ],
     );
   }
 
@@ -367,12 +615,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
         icon: const Icon(Icons.arrow_back_ios_new_rounded),
       ),
-      title: GetBuilder<ProfileController>(builder: (controller) {
-        return Text(
-          controller.user.user!.name!,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        );
-      }),
+      title: GetBuilder<ProfileController>(
+        builder: (controller) {
+          return Text(
+            controller.user.user!.name!,
+            style: const TextStyle(fontWeight: FontWeight.w500),
+          );
+        },
+      ),
       centerTitle: true,
       actions: [
         IconButton(

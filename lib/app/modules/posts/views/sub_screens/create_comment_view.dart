@@ -7,6 +7,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import 'package:get/get.dart';
 
 import '../../controllers/comment_controller.dart';
+import '../../skeletons/comment_list_skeleton.dart';
 
 class CreateCommentView extends StatelessWidget {
   CreateCommentView({super.key, this.postId, this.post});
@@ -189,7 +190,7 @@ class CreateCommentView extends StatelessWidget {
             child: Obx(
               () {
                 if (commentController.isLoading.value) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const Center(child: CommentListSkeleton());
                 }
 
                 if (commentController.comments.value.comment!.isEmpty) {
@@ -208,7 +209,7 @@ class CreateCommentView extends StatelessWidget {
     );
   }
 
-  Column _commentList() {
+  Widget _commentList() {
     return Column(
       children: [
         ListView.builder(

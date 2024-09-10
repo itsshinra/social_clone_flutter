@@ -2,12 +2,16 @@ import 'package:facebook_clone_app/app/data/models/post_model.dart';
 import 'package:facebook_clone_app/app/modules/main/controllers/profile_controller.dart';
 import 'package:facebook_clone_app/app/modules/main/views/screens/search_screen.dart';
 import 'package:facebook_clone_app/app/modules/posts/controllers/post_controller.dart';
+import 'package:facebook_clone_app/app/modules/posts/skeletons/post_skeleton.dart';
+import 'package:facebook_clone_app/app/modules/posts/skeletons/stroy_skeleton.dart';
 import 'package:facebook_clone_app/app/modules/posts/views/sub_screens/create_comment_view.dart';
 import 'package:facebook_clone_app/app/modules/posts/views/sub_screens/update_post_view.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import '../skeletons/what_on_your_mind_skeleton.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return const Center(child: Text('Check your internet connection'));
           }
           if (controller.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: PostSkeleton());
           }
           return RefreshIndicator(
             color: Colors.blue,
@@ -397,7 +401,7 @@ class _HomeScreenState extends State<HomeScreen> {
           init: ProfileController(),
           builder: (userController) {
             if (userController.isLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: StroySkeleton());
             }
             return ListView(
               physics: const BouncingScrollPhysics(),
@@ -532,14 +536,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Padding _whatOnYourMind() {
+  Widget _whatOnYourMind() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: GetBuilder<ProfileController>(
         init: ProfileController(),
         builder: (userController) {
           if (userController.isLoading) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: WhatOnYourMindSkeleton());
           }
           return Row(
             children: [
