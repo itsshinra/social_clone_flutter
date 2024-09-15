@@ -9,7 +9,7 @@ class PostSkeleton extends StatelessWidget {
     return Skeletonizer(
       enabled: true,
       child: ListView.builder(
-        itemCount: 5,
+        itemCount: 1,
         itemBuilder: (context, index) {
           return Column(
             children: [
@@ -17,6 +17,7 @@ class PostSkeleton extends StatelessWidget {
               const Divider(thickness: 4),
               _storyRow(),
               const Divider(thickness: 4),
+              _postSection(),
               _postSection(),
             ],
           );

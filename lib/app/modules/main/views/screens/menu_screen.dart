@@ -207,6 +207,7 @@ class MenuScreen extends GetView<MainController> {
   AppBar _appBar() {
     return AppBar(
       title: const Text('Menu'),
+      backgroundColor: Colors.white,
       titleTextStyle: const TextStyle(
         fontSize: 26,
         fontWeight: FontWeight.bold,
